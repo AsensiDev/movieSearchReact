@@ -1,42 +1,32 @@
 import './App.css'
-import responseMovies from './mocks/with-results.json'
-import withoutResults from './mocks/no-results.json'
+import { Movies } from './components/Movies'
+import { useMovies } from './hooks/useMovies'
+
+
 
 function App() {
-  const movies = responseMovies.Search
-  const hasMovies = movies?.length > 0
 
+  const { movies } = useMovies()
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    const { query } = Object.fromEntries(new window.FormData(event.target))
+    console.log({ query })
+  }
+  
   return (
     <div className='page'>
 
       <header>
         <h1>Buscador de películas</h1>
-        <form className="form">
-          <input type="text" placeholder='Avengers, Star Wars...' id='movie'/>
+        <form className="form" onSubmit={handleSubmit}>
+          <input name='query' type="text" placeholder='Avengers, Star Wars...' id='movie'/>
           <button type='submit'>buscar</button>
         </form>
       </header>
 
       <main>
-        {
-          hasMovies
-            ? (
-              <ul>
-                {
-                  movies.map(movie => (
-                    <li key={movie.imdbID}>
-                      <h3>{movie.Title}</h3>
-                      <p>{movie.Year}</p>
-                      <img src={movie.Poster} alt={movie.Title} />
-                    </li>
-                  ))
-                }
-              </ul>
-            )
-            : (
-              <p>No tenemos esa película en la base de datos</p>
-            )
-        }
+        <Movies movies={movies} />
       </main>
       
     </div>
