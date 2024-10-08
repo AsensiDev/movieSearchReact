@@ -38,17 +38,23 @@ function useSearch() {
 
 function App() {
 
+  const [sort, setSort] = useState(false)
   const { search, setSearch, error } = useSearch()
-  const { movies, getMovies } = useMovies({ search })
-  
+  const { movies, getMovies } = useMovies({ search, sort })
 
   function handleSubmit(event) {
     event.preventDefault()
-    getMovies()
+    getMovies({search})
+  }
+
+  const handleSort = () => {
+    setSort(!sort)
   }
 
   function handleChange(event) {
-    setSearch(event.target.value)
+    const newSearch = event.target.value
+    setSearch(newSearch)
+    getMovies({ search: newSearch})
   }
   
   return (
@@ -58,6 +64,7 @@ function App() {
         <h1>Buscador de películas</h1>
         <form className="form" onSubmit={handleSubmit}>
           <input name='query' onChange={handleChange} value={search} type="text" placeholder='Avengers, Star Wars...' id='movie'/>
+          <input type="checkbox" onChange={handleSort} checked={sort} />
           <button type='submit'>buscar</button>
         </form>
         {error && <p style={{ color: 'red'}} >{error}</p>}
